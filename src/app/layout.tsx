@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import FloatingWhatsApp from "@/components/ui/FloatingWhatsApp";
+import GlowCursorLoader from "@/components/ui/GlowCursorLoader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -92,6 +93,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full`}
     >
       <body className="min-h-full flex flex-col bg-[#050510] text-slate-50 antialiased">
+        <GlowCursorLoader />
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />

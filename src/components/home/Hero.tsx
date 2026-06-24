@@ -3,6 +3,9 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import React, { useRef } from "react";
+import dynamic from "next/dynamic";
+
+const HeroScene = dynamic(() => import("@/components/three/HeroScene"), { ssr: false });
 
 const words = ["Websites", "Mobile Apps", "Scalable Products"];
 
@@ -21,25 +24,11 @@ export default function Hero() {
       className="relative min-h-screen flex items-center justify-center overflow-hidden gradient-bg"
       aria-label="Hero section"
     >
-      {/* Grid pattern */}
-      <div className="absolute inset-0 grid-pattern opacity-40" aria-hidden="true" />
+      {/* Three.js scene */}
+      <HeroScene />
 
-      {/* Animated orbs */}
-      <motion.div
-        aria-hidden="true"
-        style={{ y }}
-        className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full bg-indigo-500/8 blur-[120px] animate-float-orb pointer-events-none"
-      />
-      <motion.div
-        aria-hidden="true"
-        style={{ y }}
-        className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-violet-500/8 blur-[100px] animate-float-orb pointer-events-none"
-        transition={{ delay: 2 }}
-      />
-      <motion.div
-        aria-hidden="true"
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-indigo-500/3 blur-[150px] pointer-events-none"
-      />
+      {/* Subtle dark overlay so text stays readable */}
+      <div className="absolute inset-0 bg-[#050510]/40 pointer-events-none" aria-hidden="true" />
 
       {/* Floating tech labels */}
       {[

@@ -19,7 +19,8 @@
       "Bash(sed -i '' 's/relative pt-32 pb-16/relative pt-24 pb-12/g' /Users/administrator/Desktop/personal/portfolio/src/app/contact/ContactClient.tsx /Users/administrator/Desktop/personal/portfolio/src/app/blog/[slug]/page.tsx)",
       "Bash(sed -i '' 's/relative pt-32 pb-20/relative pt-24 pb-12/g' /Users/administrator/Desktop/personal/portfolio/src/app/case-studies/[slug]/CaseStudyClient.tsx)",
       "Bash(xargs kill -9)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(npm install *)"
     ]
   }
 }
