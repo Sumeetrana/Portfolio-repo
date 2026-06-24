@@ -68,7 +68,7 @@ export const metadata: Metadata = {
     creator: "@sumeetrana",
   },
   verification: {
-    google: "GWeTGToghr2qf4Fh7i0uR7_zSf6PxmKUl_O9euOyx1s",
+    google: "8jBvSkXHF2od8rkvk4D1jj8iSUmVbyf1ck5iPoDvqRs",
   },
   robots: {
     index: true,
