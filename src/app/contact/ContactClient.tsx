@@ -63,9 +63,17 @@ export default function ContactClient() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setStatus("sending");
-    // Simulate sending (replace with real API call)
-    await new Promise((r) => setTimeout(r, 1200));
-    setStatus("sent");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error("Failed");
+      setStatus("sent");
+    } catch {
+      setStatus("error");
+    }
   };
 
   return (
@@ -230,7 +238,30 @@ export default function ContactClient() {
               className="lg:col-span-2"
             >
               <div className="glass-card rounded-2xl p-8">
-                {status === "sent" ? (
+                {status === "error" ? (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="text-center py-12"
+                  >
+                    <div className="w-20 h-20 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-10 h-10 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </div>
+                    <h2 className="text-2xl font-bold text-slate-100 mb-3">Something went wrong</h2>
+                    <p className="text-slate-400 mb-8">
+                      Message could not be sent. Please try again or email me directly at{" "}
+                      <a href={`mailto:${siteConfig.email}`} className="text-indigo-400 hover:underline">{siteConfig.email}</a>.
+                    </p>
+                    <button
+                      onClick={() => setStatus("idle")}
+                      className="px-6 py-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 font-medium hover:bg-indigo-500/20 transition-colors"
+                    >
+                      Try Again
+                    </button>
+                  </motion.div>
+                ) : status === "sent" ? (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
