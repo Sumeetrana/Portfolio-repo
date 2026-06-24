@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-git)",
+      "Bash(npm config *)",
+      "Read(//Users/administrator/**)",
+      "Bash(npm --registry https://registry.npmjs.org install -g create-next-app)",
+      "Bash(create-next-app . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-git)",
+      "Bash(npm_config_registry=https://registry.npmjs.org create-next-app . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-git)",
+      "Bash(npm --registry https://registry.npmjs.org install framer-motion)",
+      "Bash(npm --registry https://registry.npmjs.org install framer-motion --legacy-peer-deps)",
+      "Bash(npm --registry https://registry.npmjs.org install framer-motion --engine-strict=false)",
+      "Bash(nvm list *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/case-studies/genienow)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/blog/why-nextjs-is-great-for-seo)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3001/)",
+      "Bash(sed -i '' 's/section-padding pt-32 pb-20/section-padding pt-24 pb-12/g' /Users/administrator/Desktop/personal/portfolio/src/app/case-studies/CaseStudiesClient.tsx /Users/administrator/Desktop/personal/portfolio/src/app/blog/BlogClient.tsx)",
+      "Bash(sed -i '' 's/relative pt-32 pb-16/relative pt-24 pb-12/g' /Users/administrator/Desktop/personal/portfolio/src/app/contact/ContactClient.tsx /Users/administrator/Desktop/personal/portfolio/src/app/blog/[slug]/page.tsx)",
+      "Bash(sed -i '' 's/relative pt-32 pb-20/relative pt-24 pb-12/g' /Users/administrator/Desktop/personal/portfolio/src/app/case-studies/[slug]/CaseStudyClient.tsx)",
+      "Bash(xargs kill -9)",
+      "Bash(npm run *)"
+    ]
+  }
+}
