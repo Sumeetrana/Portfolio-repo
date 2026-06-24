@@ -1,5 +1,50 @@
 @import "tailwindcss";
 
+/* ─── Scroll progress bar ────────────────────────────────────────────────── */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 9999;
+  background: linear-gradient(to right, #6366f1, #8b5cf6, #06b6d4);
+  transform-origin: left;
+  /* CSS scroll-driven animation — Chrome 115+ */
+  animation: scroll-progress-grow linear;
+  animation-timeline: scroll();
+}
+@keyframes scroll-progress-grow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* ─── Hero pin — sections slide over the sticky hero ────────────────────── */
+/* HomePageSections must sit in the normal flow at z-index 1 */
+.sections-over-hero {
+  position: relative;
+  z-index: 1;
+}
+/* Each section that slides over needs a solid backdrop */
+.section-over-hero {
+  background: #050510;
+}
+
+/* ─── Horizontal scroll panels ──────────────────────────────────────────── */
+/* Ensure each panel fills the viewport exactly */
+.h-panel {
+  width: 100vw;
+  height: 100vh;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+/* ─── Section scale transitions (applied via ScaleReveal component) ─────── */
+/* will-change hint so the browser composites these on the GPU */
+.scale-reveal-target {
+  will-change: transform, opacity;
+}
+
 /* ─── CSS custom properties ─────────────────────────────────────────────── */
 :root {
   --bg-primary: #050510;

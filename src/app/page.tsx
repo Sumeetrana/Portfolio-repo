@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Hero from "@/components/home/Hero";
 import HomePageSections from "@/components/home/HomePageSections";
+import ScrollProgressBar from "@/components/effects/ScrollProgressBar";
 
 export const metadata: Metadata = {
   title: "Sumeet Rana — Web, Mobile App & SEO Development Partner for Modern Businesses",
@@ -19,6 +20,8 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
+      <ScrollProgressBar />
+      {/* Hero occupies 300vh — 3 horizontal scroll panels with shared 3D background */}
       <Hero />
       <HomePageSections />
     </>
