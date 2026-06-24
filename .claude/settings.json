@@ -20,7 +20,23 @@
       "Bash(sed -i '' 's/relative pt-32 pb-20/relative pt-24 pb-12/g' /Users/administrator/Desktop/personal/portfolio/src/app/case-studies/[slug]/CaseStudyClient.tsx)",
       "Bash(xargs kill -9)",
       "Bash(npm run *)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(nvm use *)",
+      "Bash(npx prisma *)",
+      "Bash(mkdir -p \"/Users/administrator/Desktop/personal/portfolio/src/app/api/admin/sources/[id]\")",
+      "Bash(curl -s http://localhost:3001/admin/sources -o /dev/null -w \"%{http_code}\")",
+      "Bash(mkdir -p /Users/administrator/Desktop/personal/portfolio/src/app/api/admin/generate /Users/administrator/Desktop/personal/portfolio/src/app/api/admin/drafts /Users/administrator/Desktop/personal/portfolio/src/app/admin/generate \"/Users/administrator/Desktop/personal/portfolio/src/app/admin/drafts/[id]\" /Users/administrator/Desktop/personal/portfolio/src/components/admin/generate /Users/administrator/Desktop/personal/portfolio/src/components/admin/drafts)",
+      "Bash(mkdir -p \"/Users/administrator/Desktop/personal/portfolio/src/app/api/admin/drafts/[id]/publish\" \"/Users/administrator/Desktop/personal/portfolio/src/app/api/admin/drafts/[id]/social\")",
+      "Bash(curl -s http://localhost:3001/admin/generate -o /dev/null -w \"%{http_code}\")",
+      "Bash(npm list *)",
+      "Bash(2>&1)",
+      "Bash(node -e ' *)",
+      "Bash(curl -s --max-time 5 \"https://mermaid.ink/img/Z3JhcGggVEQKICAgIEEgLS0+IEI=\")"
+    ],
+    "additionalDirectories": [
+      "/Users/administrator/Desktop/personal/portfolio/src/app/api/admin/sources",
+      "/Users/administrator/Desktop/personal/portfolio/src/app/admin/drafts",
+      "/Users/administrator/Desktop/personal/portfolio/src/app/api/admin/drafts/[id]"
     ]
   }
 }

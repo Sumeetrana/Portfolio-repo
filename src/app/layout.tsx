@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
-import FloatingWhatsApp from "@/components/ui/FloatingWhatsApp";
+import ShellWrapper from "@/components/layout/ShellWrapper";
 import GlowCursorLoader from "@/components/ui/GlowCursorLoader";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -95,10 +93,9 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-[#050510] text-slate-50 antialiased">
         <GlowCursorLoader />
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <FloatingWhatsApp />
+        <ShellWrapper>
+          <main className="flex-1">{children}</main>
+        </ShellWrapper>
         <Analytics />
       </body>
     </html>

@@ -2,6 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { blogPosts } from "@/lib/data";
+import { getPublishedBySlug } from "@/lib/repositories/published.repo";
+import { markdownToHtml } from "@/lib/markdown";
+
+// Allow slugs not in generateStaticParams (DB posts)
+export const dynamicParams = true;
+export const revalidate = 60;
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -13,26 +19,58 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const post = blogPosts.find((p) => p.slug === slug);
-  if (!post) return { title: "Not Found" };
-  return {
-    title: `${post.title} | Sumeet Rana`,
-    description: post.excerpt,
-    keywords: post.tags.join(", "),
-    openGraph: {
-      title: post.title,
-      description: post.excerpt,
-      type: "article",
-      publishedTime: post.date,
-      authors: ["Sumeet Rana"],
-      tags: post.tags,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: post.title,
-      description: post.excerpt,
-    },
-  };
+
+  // Static post
+  const staticPost = blogPosts.find((p) => p.slug === slug);
+  if (staticPost) {
+    return {
+      title: `${staticPost.title} | Sumeet Rana`,
+      description: staticPost.excerpt,
+      keywords: staticPost.tags.join(", "),
+      openGraph: {
+        title: staticPost.title,
+        description: staticPost.excerpt,
+        type: "article",
+        publishedTime: staticPost.date,
+        authors: ["Sumeet Rana"],
+        tags: staticPost.tags,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: staticPost.title,
+        description: staticPost.excerpt,
+      },
+    };
+  }
+
+  // DB post
+  try {
+    const dbPost = await getPublishedBySlug(slug);
+    if (dbPost) {
+      return {
+        title: `${dbPost.title} | Sumeet Rana`,
+        description: dbPost.metaDescription,
+        keywords: dbPost.tags.join(", "),
+        openGraph: {
+          title: dbPost.title,
+          description: dbPost.metaDescription,
+          type: "article",
+          publishedTime: dbPost.publishedAt.toISOString(),
+          authors: ["Sumeet Rana"],
+          tags: dbPost.tags,
+        },
+        twitter: {
+          card: "summary_large_image",
+          title: dbPost.title,
+          description: dbPost.metaDescription,
+        },
+      };
+    }
+  } catch {
+    // DB unavailable — fall through to notFound
+  }
+
+  return { title: "Not Found" };
 }
 
 const categoryBadgeColors: Record<string, string> = {
@@ -42,7 +80,7 @@ const categoryBadgeColors: Record<string, string> = {
   "AI & Automation": "bg-amber-500/20 text-amber-300 border-amber-500/30",
 };
 
-// --- ARTICLE CONTENT ---
+// --- STATIC ARTICLE CONTENT ---
 
 function ArticleUAEFastWebsite() {
   return (
@@ -364,31 +402,12 @@ function ArticleMobileApps() {
         remind them when they were close to a free drink, and send personalised
         offers on their birthday — all automatically.
       </p>
-      <p>
-        For UAE consumers who are highly accustomed to loyalty apps from major
-        brands (Starbucks, Careem, Noon), the expectation of a digital loyalty
-        experience is already set. Smaller businesses that match this expectation
-        build disproportionate loyalty.
-      </p>
 
       <h2>Direct Push Notifications: Your Own Marketing Channel</h2>
       <p>
         Email open rates have declined to 20–25% for most industries. Social
         media reach is pay-to-play. Push notifications, sent to app users who
         have opted in, achieve open rates of 40–70%.
-      </p>
-      <p>
-        This is your own direct marketing channel with no algorithm, no
-        platform fees, and no competition for attention. A fitness studio can
-        fill empty class slots with a 30-minute push notification. A restaurant
-        can drive lunch covers on a slow Tuesday. A retailer can move
-        slow-selling inventory with a targeted flash sale.
-      </p>
-      <p>
-        The key word is &quot;targeted.&quot; Modern apps can segment push
-        notifications by purchase history, location, app activity, and
-        preferences. Generic blasts reduce opt-in rates — personalised messages
-        drive action.
       </p>
 
       <h2>In-App Ordering and Appointment Booking</h2>
@@ -397,17 +416,6 @@ function ArticleMobileApps() {
         lost. An app with native in-app ordering or booking removes that
         friction completely.
       </p>
-      <p>
-        For UAE restaurants, in-app ordering means customers can browse the
-        full menu with photos, customise orders, save their address, and pay
-        with Apple Pay — all in under 60 seconds. No phone calls, no errors, no
-        third-party commission.
-      </p>
-      <p>
-        For service businesses — salons, clinics, personal trainers — in-app
-        booking with real-time availability and automated reminders reduces
-        no-shows by 30–50%, according to scheduling platform data.
-      </p>
 
       <h2>First-Party Data Ownership</h2>
       <p>
@@ -415,31 +423,12 @@ function ArticleMobileApps() {
         interaction a customer has with your app generates data that you own:
         what they browse, what they buy, when they visit, what they skip.
       </p>
-      <p>
-        Businesses using third-party platforms (Talabat, Careem, Deliveroo) get
-        order fulfilment but surrender all customer data to the platform. You
-        cannot remarket to those customers, cannot understand their behaviour,
-        and cannot build a relationship with them outside the platform.
-      </p>
-      <p>
-        Your own app changes this entirely. The customer data you accumulate
-        becomes a strategic asset — informing product decisions, marketing
-        personalisation, and long-term business strategy.
-      </p>
 
       <h2>Getting Started: What to Expect</h2>
       <p>
         A well-scoped MVP mobile app for a UAE local business typically takes
         6–10 weeks to build and launch on both iOS and Android. The investment
-        ranges from AED 25,000 to AED 60,000 depending on features, with ongoing
-        hosting costs of AED 200–600 per month.
-      </p>
-      <p>
-        The questions to ask before starting: What is the single most important
-        thing customers should do in this app? What would make them open it more
-        than once? What data do you want to capture? Answering these questions
-        clearly produces a better product than trying to build everything at
-        once.
+        ranges from AED 25,000 to AED 60,000 depending on features.
       </p>
     </div>
   );
@@ -451,156 +440,27 @@ function ArticleNextJsSEO() {
       <p className="lead">
         Choosing the right framework for your website is one of the most
         consequential technical decisions you will make — and when SEO is a
-        priority, Next.js has established itself as the clear leader. Here is
-        why, in practical terms.
+        priority, Next.js has established itself as the clear leader.
       </p>
 
       <h2>The SEO Problem with Client-Side Rendering</h2>
       <p>
         Traditional React applications render entirely in the browser. When
         Google&apos;s crawler visits a client-rendered page, it initially receives
-        an almost empty HTML document — a blank shell that waits for JavaScript
-        to execute before content appears.
-      </p>
-      <p>
-        While Google has improved its ability to crawl JavaScript-rendered
-        content, it still has significant limitations. Crawl budget is wasted,
-        content may be missed, and crucially — the perceived load time for
-        crawlers is much higher. This directly impacts how Google scores and
-        ranks your pages.
-      </p>
-      <p>
-        Server-side rendering (SSR) solves this at the root. When Google crawls
-        a Next.js SSR page, it receives a fully rendered HTML document with all
-        content, metadata, and structured data immediately available. There is
-        nothing to execute, nothing to wait for. The entire page is indexable
-        on the first request.
+        an almost empty HTML document. Server-side rendering solves this at the root.
       </p>
 
-      <h2>Next.js Metadata API: The Right Way to Handle SEO Tags</h2>
+      <h2>Next.js Metadata API</h2>
       <p>
         Next.js 13+ introduced a dedicated Metadata API that makes managing
-        SEO tags clean, type-safe, and dynamic. Instead of manually placing
-        &lt;meta&gt; tags in the HTML head — error-prone and easy to duplicate
-        — you export a metadata object from any page file:
-      </p>
-      <ul>
-        <li>
-          <strong>Static metadata:</strong> Define title, description,
-          keywords, and OpenGraph tags for pages that don&apos;t change.
-        </li>
-        <li>
-          <strong>Dynamic metadata:</strong> Use{" "}
-          <code>generateMetadata()</code> to fetch data and return
-          page-specific SEO tags for product pages, blog posts, and profiles —
-          all server-rendered before the page is sent to the browser.
-        </li>
-        <li>
-          <strong>Template titles:</strong> The metadata API supports title
-          templates (e.g., <code>%s | Your Site Name</code>) so every page
-          title follows a consistent pattern without duplication.
-        </li>
-      </ul>
-
-      <h2>Automatic Image Optimisation</h2>
-      <p>
-        Images are consistently the largest contributor to poor Core Web Vitals
-        scores. Next.js solves this with the built-in{" "}
-        <code>&lt;Image /&gt;</code> component, which automatically:
-      </p>
-      <ul>
-        <li>
-          Converts images to WebP or AVIF (30–50% smaller than JPEG/PNG at
-          the same quality)
-        </li>
-        <li>Lazy-loads images below the fold to reduce initial page weight</li>
-        <li>
-          Generates srcSet for responsive images across different screen sizes
-        </li>
-        <li>
-          Prevents layout shift by requiring explicit width and height
-          attributes
-        </li>
-        <li>
-          Serves images from a global CDN edge network when deployed on Vercel
-        </li>
-      </ul>
-      <p>
-        Switching from standard <code>&lt;img&gt;</code> tags to Next.js{" "}
-        <code>&lt;Image /&gt;</code> components typically improves LCP scores
-        by 30–60% with no other changes.
+        SEO tags clean, type-safe, and dynamic.
       </p>
 
       <h2>Core Web Vitals: Built for Performance</h2>
       <p>
         Next.js was designed from the ground up with performance as a first
-        principle. Several of its default behaviours directly improve Core Web
-        Vitals:
-      </p>
-      <ul>
-        <li>
-          <strong>Font optimisation:</strong>{" "}
-          <code>next/font</code> automatically hosts Google Fonts self-hosted,
-          eliminating the render-blocking external font request that degrades
-          LCP on millions of websites.
-        </li>
-        <li>
-          <strong>Automatic code splitting:</strong> Each page only loads the
-          JavaScript it needs. No monolithic bundle — only what is required
-          for the current route.
-        </li>
-        <li>
-          <strong>Streaming SSR:</strong> Next.js can stream HTML to the
-          browser incrementally, meaning the user sees content faster even
-          before the full page is generated.
-        </li>
-        <li>
-          <strong>Static generation by default:</strong> Pages that
-          don&apos;t need real-time data are pre-built at deploy time and
-          served from CDN — the fastest possible response time.
-        </li>
-      </ul>
-
-      <h2>Structured Data (JSON-LD) Made Easy</h2>
-      <p>
-        JSON-LD schema markup tells Google exactly what your content is — an
-        article, a product, a local business, an FAQ — enabling rich snippets
-        in search results that increase click-through rates by 15–30%.
-      </p>
-      <p>
-        In Next.js, you can inject JSON-LD directly into any page component as
-        a server-rendered script tag, ensuring it is always present and always
-        accurate. For a blog, this means Article schema. For an e-commerce
-        product, Product and Review schema. For a local business, LocalBusiness
-        schema with opening hours and location data.
-      </p>
-
-      <h2>Incremental Static Regeneration (ISR) for Content Sites</h2>
-      <p>
-        ISR is one of Next.js&apos;s most powerful features for content-heavy
-        sites and blogs. It allows you to pre-render pages statically at build
-        time, but revalidate them in the background on a schedule you define.
-      </p>
-      <p>
-        For a blog, this means every article page is served as a static file
-        (blazing fast, CDN-cached), but if you update the article, Next.js
-        silently regenerates the page and swaps it in — without a full
-        redeploy. The user always gets fresh content, and Google always gets
-        fast, fully-rendered HTML.
-      </p>
-
-      <h2>The Competitive Advantage</h2>
-      <p>
-        In competitive markets like UAE real estate, hospitality, and e-commerce,
-        the difference between a Next.js site and a client-rendered React app or
-        poorly optimised WordPress site is measurable in rankings and revenue.
-        When two businesses have similar content and backlink profiles, technical
-        SEO — driven by performance and proper metadata — becomes the tiebreaker.
-      </p>
-      <p>
-        Next.js does not make SEO automatic. You still need good content,
-        keyword strategy, and backlinks. But it removes every technical obstacle
-        that would otherwise hold your site back from the rankings it deserves.
+        principle. Font optimisation, automatic code splitting, streaming SSR,
+        and static generation by default all contribute to exceptional scores.
       </p>
     </div>
   );
@@ -613,176 +473,14 @@ function ArticleAIAutomation() {
         The businesses that will win in the next five years are not necessarily
         the ones with the biggest teams or the largest budgets. They are the
         ones that learn to leverage AI automation to operate with a
-        disproportionate output-to-headcount ratio. Here is a practical guide to
-        getting started — no hype, no buzzwords.
+        disproportionate output-to-headcount ratio.
       </p>
 
       <h2>What AI Automation Actually Means for Small Businesses</h2>
       <p>
         AI automation is not about replacing people. It is about eliminating the
         repetitive, low-cognitive work that consumes hours of your team&apos;s
-        time every week — work that adds no strategic value and which a
-        well-configured AI system can handle reliably at a fraction of the cost.
-      </p>
-      <p>
-        The key word is &quot;repetitive.&quot; If a task follows a predictable
-        pattern — even if it is complex — there is a high probability that AI
-        can handle it. Let&apos;s look at five real use cases where UAE businesses
-        are already seeing significant time savings.
-      </p>
-
-      <h2>1. Content Creation and Social Media</h2>
-      <p>
-        Most businesses struggle with content consistency. The solution is not
-        hiring more writers — it is building a content pipeline that uses AI to
-        do the heavy lifting while a human does the editing and approving.
-      </p>
-      <p>
-        A typical content automation setup using OpenAI GPT-4 and a scheduling
-        tool like Buffer or Hootsuite can:
-      </p>
-      <ul>
-        <li>
-          Research trending topics in your industry weekly using search API
-          data
-        </li>
-        <li>Draft 5 social media posts per day based on a brand style guide</li>
-        <li>Generate first drafts of blog articles from a brief</li>
-        <li>
-          Repurpose a single blog post into LinkedIn posts, email newsletters,
-          and Twitter threads
-        </li>
-      </ul>
-      <p>
-        Time saved per week: 6–10 hours for a typical small business marketing
-        function.
-      </p>
-
-      <h2>2. Customer Support First Response</h2>
-      <p>
-        The first response time is the most critical metric in customer support.
-        A customer who waits 24 hours for an answer has a significantly higher
-        churn risk than one who gets an instant reply — even if that reply is
-        from an AI assistant that only partially resolves their question.
-      </p>
-      <p>
-        AI customer support using tools like a custom GPT-4 chatbot or
-        Intercom&apos;s AI layer can:
-      </p>
-      <ul>
-        <li>Handle 60–80% of common queries without human intervention</li>
-        <li>
-          Provide instant answers about pricing, availability, policies, and
-          hours
-        </li>
-        <li>
-          Escalate complex issues to a human agent with full conversation
-          context
-        </li>
-        <li>
-          Operate 24/7 across WhatsApp, website chat, and email simultaneously
-        </li>
-      </ul>
-      <p>
-        For UAE businesses with multilingual customer bases, AI assistants
-        trained on Arabic and English dramatically improve accessibility without
-        additional staffing costs.
-      </p>
-
-      <h2>3. Data Entry and Document Processing</h2>
-      <p>
-        Manual data entry is one of the most error-prone and time-consuming
-        operations in any business. Invoices, purchase orders, customer forms,
-        and survey responses — all of this can be automatically extracted and
-        processed using AI.
-      </p>
-      <p>
-        Tools like OpenAI&apos;s vision model or specialised document AI services
-        (AWS Textract, Azure Form Recognizer) can extract structured data from
-        unstructured documents with 95%+ accuracy. Combined with Zapier or a
-        custom LangChain workflow, this data can be pushed directly into your
-        CRM, ERP, or spreadsheet.
-      </p>
-      <p>Time saved per week: 3–8 hours depending on document volume.</p>
-
-      <h2>4. Automated Reporting and Analytics Summaries</h2>
-      <p>
-        Executives and business owners need to make decisions based on data, but
-        few have time to dig through dashboards every day. AI can sit on top of
-        your data and generate human-readable summaries automatically.
-      </p>
-      <p>
-        A weekly performance report that previously took an analyst 3 hours to
-        compile — pulling data from Google Analytics, your CRM, and your
-        financial system — can be automated with a LangChain workflow that:
-      </p>
-      <ul>
-        <li>Queries each data source via API</li>
-        <li>Passes the structured data to a GPT-4 prompt</li>
-        <li>Generates a narrative summary with key highlights and anomalies</li>
-        <li>
-          Sends the report to the relevant stakeholders every Monday morning
-        </li>
-      </ul>
-
-      <h2>5. Lead Scoring and CRM Enrichment</h2>
-      <p>
-        Sales teams waste enormous time on leads that will never convert. AI
-        can analyse incoming leads based on company size, engagement behaviour,
-        website pages visited, and email interaction patterns to score each lead
-        and prioritise the sales queue automatically.
-      </p>
-      <p>
-        Integrated with a CRM like HubSpot or Pipedrive, an AI lead scoring
-        system can also enrich lead profiles by pulling public data (LinkedIn,
-        company website, news mentions) and generating a pre-call brief for the
-        sales rep — so every conversation starts informed.
-      </p>
-
-      <h2>The Tools You Need</h2>
-      <p>
-        You do not need a team of AI engineers to implement these automations.
-        The modern tooling stack is accessible:
-      </p>
-      <ul>
-        <li>
-          <strong>OpenAI API:</strong> The foundation for most language-based
-          automations. GPT-4o is capable, affordable, and integrates easily
-          into existing systems.
-        </li>
-        <li>
-          <strong>LangChain:</strong> An open-source framework for building
-          multi-step AI workflows (agents) that can call tools, query databases,
-          and make decisions.
-        </li>
-        <li>
-          <strong>Zapier / Make (Integromat):</strong> No-code automation
-          platforms that connect your existing tools (Gmail, Sheets, Slack,
-          HubSpot) with AI services.
-        </li>
-        <li>
-          <strong>n8n:</strong> A self-hosted, open-source alternative to
-          Zapier with more flexibility and no per-task pricing.
-        </li>
-      </ul>
-
-      <h2>Getting Started: A Practical First Step</h2>
-      <p>
-        The biggest mistake businesses make is trying to automate everything at
-        once. Start with one process. Pick the most painful, most repetitive
-        task your team does — the thing everyone dreads — and build a focused
-        automation for that one thing.
-      </p>
-      <p>
-        Measure the time saved. Document the process. Then roll it out to the
-        next bottleneck. Within six months, most businesses that start this way
-        find they have reclaimed 15–25 hours of team time per week — time that
-        goes back into the work that actually requires human judgment, creativity,
-        and relationship-building.
-      </p>
-      <p>
-        That is the real promise of AI automation: not replacing humans, but
-        amplifying what humans are uniquely good at.
+        time every week.
       </p>
     </div>
   );
@@ -798,38 +496,91 @@ const articleContent: Record<string, React.ReactNode> = {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
-  const post = blogPosts.find((p) => p.slug === slug);
-  if (!post) notFound();
 
-  const content = articleContent[slug];
-  if (!content) notFound();
+  // ── Static post ──────────────────────────────────────────────────────────────
+  const staticPost = blogPosts.find((p) => p.slug === slug);
+  if (staticPost) {
+    const content = articleContent[slug];
+    if (!content) notFound();
 
-  const currentIndex = blogPosts.findIndex((p) => p.slug === slug);
-  const relatedPosts = blogPosts.filter(
-    (p) => p.slug !== slug && (p.category === post.category || p.tags.some((t) => post.tags.includes(t)))
-  ).slice(0, 3);
+    const relatedPosts = blogPosts
+      .filter(
+        (p) =>
+          p.slug !== slug &&
+          (p.category === staticPost.category ||
+            p.tags.some((t) => staticPost.tags.includes(t)))
+      )
+      .slice(0, 3);
+
+    const categoryBadge =
+      categoryBadgeColors[staticPost.category] ??
+      "bg-indigo-500/20 text-indigo-300 border-indigo-500/30";
+
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: staticPost.title,
+      description: staticPost.excerpt,
+      author: { "@type": "Person", name: "Sumeet Rana", url: "https://sumeetrana.com" },
+      datePublished: staticPost.date,
+      publisher: { "@type": "Person", name: "Sumeet Rana" },
+      keywords: staticPost.tags.join(", "),
+    };
+
+    return (
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <PostShell
+          title={staticPost.title}
+          excerpt={staticPost.excerpt}
+          date={staticPost.date}
+          readTime={staticPost.readTime}
+          tags={staticPost.tags}
+          categoryBadge={categoryBadge}
+          category={staticPost.category}
+          relatedPosts={relatedPosts.map((r) => ({
+            slug: r.slug,
+            title: r.title,
+            category: r.category,
+            readTime: r.readTime,
+          }))}
+        >
+          {content}
+        </PostShell>
+      </>
+    );
+  }
+
+  // ── DB (AI-generated) post ───────────────────────────────────────────────────
+  let dbPost;
+  try {
+    dbPost = await getPublishedBySlug(slug);
+  } catch {
+    notFound();
+  }
+  if (!dbPost) notFound();
+
+  const htmlContent = markdownToHtml(dbPost.content);
+  const dateStr = dbPost.publishedAt.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  const readTime = `${dbPost.readingTime} min read`;
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: post.title,
-    description: post.excerpt,
-    author: {
-      "@type": "Person",
-      name: "Sumeet Rana",
-      url: "https://sumeetrana.com",
-    },
-    datePublished: post.date,
-    publisher: {
-      "@type": "Person",
-      name: "Sumeet Rana",
-    },
-    keywords: post.tags.join(", "),
+    headline: dbPost.title,
+    description: dbPost.metaDescription,
+    author: { "@type": "Person", name: "Sumeet Rana", url: "https://sumeetrana.com" },
+    datePublished: dbPost.publishedAt.toISOString(),
+    publisher: { "@type": "Person", name: "Sumeet Rana" },
+    keywords: dbPost.tags.join(", "),
   };
-
-  const categoryBadge =
-    categoryBadgeColors[post.category] ??
-    "bg-indigo-500/20 text-indigo-300 border-indigo-500/30";
 
   return (
     <>
@@ -837,212 +588,194 @@ export default async function BlogPostPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main className="min-h-screen" style={{ background: "#050510" }}>
-        {/* Hero */}
-        <section className="relative pt-24 pb-12 overflow-hidden">
-          <div className="absolute inset-0 grid-pattern opacity-20" />
-          <div className="container-custom relative z-10">
-            {/* Breadcrumb */}
-            <nav className="flex items-center gap-2 text-sm text-white/40 mb-10">
-              <Link href="/" className="hover:text-white/70 transition-colors">
-                Home
-              </Link>
-              <span>/</span>
-              <Link
-                href="/blog"
-                className="hover:text-white/70 transition-colors"
-              >
-                Blog
-              </Link>
-              <span>/</span>
-              <span className="text-white/60 line-clamp-1">{post.title}</span>
-            </nav>
+      <PostShell
+        title={dbPost.title}
+        excerpt={dbPost.excerpt}
+        date={dateStr}
+        readTime={readTime}
+        tags={dbPost.tags}
+        categoryBadge="bg-indigo-500/20 text-indigo-300 border-indigo-500/30"
+        category="Engineering"
+        relatedPosts={[]}
+      >
+        <div
+          className="prose-custom"
+          dangerouslySetInnerHTML={{ __html: htmlContent }}
+        />
+      </PostShell>
+    </>
+  );
+}
 
-            <div className="max-w-3xl">
-              <div className="flex items-center gap-3 mb-5">
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-semibold border ${categoryBadge}`}
-                >
-                  {post.category}
-                </span>
-              </div>
-              <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
-                {post.title}
-              </h1>
-              <p className="text-lg text-white/60 leading-relaxed mb-8">
-                {post.excerpt}
-              </p>
-              <div className="flex flex-wrap items-center gap-4 text-sm text-white/40">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-xs font-bold">
-                    SR
-                  </div>
-                  <span className="text-white/60 font-medium">Sumeet Rana</span>
+// ── Shared layout shell ───────────────────────────────────────────────────────
+
+function PostShell({
+  title,
+  excerpt,
+  date,
+  readTime,
+  tags,
+  category,
+  categoryBadge,
+  relatedPosts,
+  children,
+}: {
+  title: string;
+  excerpt: string;
+  date: string;
+  readTime: string;
+  tags: string[];
+  category: string;
+  categoryBadge: string;
+  relatedPosts: { slug: string; title: string; category: string; readTime: string }[];
+  children: React.ReactNode;
+}) {
+  return (
+    <main className="min-h-screen" style={{ background: "#050510" }}>
+      {/* Hero */}
+      <section className="relative pt-24 pb-12 overflow-hidden">
+        <div className="absolute inset-0 grid-pattern opacity-20" />
+        <div className="container-custom relative z-10">
+          <nav className="flex items-center gap-2 text-sm text-white/40 mb-10">
+            <Link href="/" className="hover:text-white/70 transition-colors">Home</Link>
+            <span>/</span>
+            <Link href="/blog" className="hover:text-white/70 transition-colors">Blog</Link>
+            <span>/</span>
+            <span className="text-white/60 line-clamp-1">{title}</span>
+          </nav>
+
+          <div className="max-w-3xl">
+            <div className="flex items-center gap-3 mb-5">
+              <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${categoryBadge}`}>
+                {category}
+              </span>
+            </div>
+            <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
+              {title}
+            </h1>
+            <p className="text-lg text-white/60 leading-relaxed mb-8">{excerpt}</p>
+            <div className="flex flex-wrap items-center gap-4 text-sm text-white/40">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-xs font-bold">
+                  SR
                 </div>
-                <span>·</span>
-                <span>{post.date}</span>
-                <span>·</span>
-                <span>{post.readTime}</span>
+                <span className="text-white/60 font-medium">Sumeet Rana</span>
               </div>
+              <span>·</span>
+              <span>{date}</span>
+              <span>·</span>
+              <span>{readTime}</span>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Body */}
-        <div className="container-custom pb-24">
-          <div className="flex flex-col xl:flex-row gap-12">
-            {/* Article */}
-            <article className="flex-1 min-w-0 max-w-3xl">
-              {/* Tags */}
-              <div className="flex flex-wrap gap-2 mb-10">
-                {post.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="px-2.5 py-1 rounded-md bg-white/5 border border-white/5 text-white/40 text-xs"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
+      {/* Body */}
+      <div className="container-custom pb-24">
+        <div className="flex flex-col xl:flex-row gap-12">
+          <article className="flex-1 min-w-0 max-w-3xl">
+            <div className="flex flex-wrap gap-2 mb-10">
+              {tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="px-2.5 py-1 rounded-md bg-white/5 border border-white/5 text-white/40 text-xs"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
 
-              {/* Article Content */}
-              {content}
+            {children}
 
-              {/* Author Box */}
-              <div className="mt-16 glass-card rounded-2xl p-8 border border-indigo-500/20">
-                <div className="flex items-start gap-5">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-xl font-bold flex-shrink-0">
-                    SR
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-white font-bold text-lg mb-1">
-                      Sumeet Rana
-                    </h3>
-                    <p className="text-indigo-400 text-sm mb-3">
-                      Senior Software Engineer · Abu Dhabi, UAE
-                    </p>
-                    <p className="text-white/60 text-sm leading-relaxed mb-5">
-                      I help businesses and founders build fast, modern, and
-                      SEO-optimised web and mobile products. With experience
-                      across full-stack development, performance optimisation,
-                      and AI integration, I focus on building digital products
-                      that deliver measurable results.
-                    </p>
-                    <Link
-                      href="/contact"
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold text-sm hover:opacity-90 transition-all"
-                    >
-                      Work with me
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17 8l4 4m0 0l-4 4m4-4H3"
-                        />
-                      </svg>
-                    </Link>
-                  </div>
+            {/* Author Box */}
+            <div className="mt-16 glass-card rounded-2xl p-8 border border-indigo-500/20">
+              <div className="flex items-start gap-5">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-xl font-bold flex-shrink-0">
+                  SR
                 </div>
-              </div>
-            </article>
-
-            {/* Sidebar */}
-            <aside className="xl:w-72 flex-shrink-0">
-              <div className="xl:sticky xl:top-32 space-y-6">
-                {/* Related Articles */}
-                {relatedPosts.length > 0 && (
-                  <div className="glass-card rounded-2xl p-6 border border-white/5">
-                    <h3 className="text-sm font-semibold text-white/60 uppercase tracking-wider mb-4">
-                      Related Articles
-                    </h3>
-                    <div className="space-y-4">
-                      {relatedPosts.map((related) => (
-                        <Link
-                          key={related.slug}
-                          href={`/blog/${related.slug}`}
-                          className="group block"
-                        >
-                          <div className="p-3 rounded-xl bg-white/3 border border-white/5 hover:border-white/10 transition-all">
-                            <span
-                              className={`inline-block px-2 py-0.5 rounded text-xs font-medium border mb-2 ${
-                                categoryBadgeColors[related.category] ??
-                                "bg-indigo-500/20 text-indigo-300 border-indigo-500/30"
-                              }`}
-                            >
-                              {related.category}
-                            </span>
-                            <h4 className="text-white text-sm font-medium leading-snug group-hover:text-indigo-300 transition-colors">
-                              {related.title}
-                            </h4>
-                            <p className="text-white/30 text-xs mt-1">
-                              {related.readTime}
-                            </p>
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
-                    <Link
-                      href="/blog"
-                      className="flex items-center gap-2 text-indigo-400 hover:text-indigo-300 transition-colors text-sm font-medium mt-4"
-                    >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M7 16l-4-4m0 0l4-4m-4 4h18"
-                        />
-                      </svg>
-                      All articles
-                    </Link>
-                  </div>
-                )}
-
-                {/* CTA */}
-                <div className="glass-card rounded-2xl p-6 border border-indigo-500/20">
-                  <h3 className="text-white font-bold mb-2">
-                    Need help with your project?
-                  </h3>
-                  <p className="text-white/50 text-sm mb-5 leading-relaxed">
-                    I&apos;m available for web, mobile, and AI automation
-                    projects. Let&apos;s have a quick call.
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-white font-bold text-lg mb-1">Sumeet Rana</h3>
+                  <p className="text-indigo-400 text-sm mb-3">Senior Software Engineer · Abu Dhabi, UAE</p>
+                  <p className="text-white/60 text-sm leading-relaxed mb-5">
+                    I help businesses and founders build fast, modern, and
+                    SEO-optimised web and mobile products. With experience
+                    across full-stack development, performance optimisation,
+                    and AI integration, I focus on building digital products
+                    that deliver measurable results.
                   </p>
                   <Link
                     href="/contact"
-                    className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold text-sm hover:opacity-90 hover:scale-105 transition-all duration-200 shadow-lg"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold text-sm hover:opacity-90 transition-all"
                   >
-                    Get in Touch
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 8l4 4m0 0l-4 4m4-4H3"
-                      />
+                    Work with me
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
                   </Link>
                 </div>
               </div>
-            </aside>
-          </div>
+            </div>
+          </article>
+
+          {/* Sidebar */}
+          <aside className="xl:w-72 flex-shrink-0">
+            <div className="xl:sticky xl:top-32 space-y-6">
+              {relatedPosts.length > 0 && (
+                <div className="glass-card rounded-2xl p-6 border border-white/5">
+                  <h3 className="text-sm font-semibold text-white/60 uppercase tracking-wider mb-4">
+                    Related Articles
+                  </h3>
+                  <div className="space-y-4">
+                    {relatedPosts.map((related) => (
+                      <Link key={related.slug} href={`/blog/${related.slug}`} className="group block">
+                        <div className="p-3 rounded-xl bg-white/3 border border-white/5 hover:border-white/10 transition-all">
+                          <span
+                            className={`inline-block px-2 py-0.5 rounded text-xs font-medium border mb-2 ${
+                              categoryBadgeColors[related.category] ??
+                              "bg-indigo-500/20 text-indigo-300 border-indigo-500/30"
+                            }`}
+                          >
+                            {related.category}
+                          </span>
+                          <h4 className="text-white text-sm font-medium leading-snug group-hover:text-indigo-300 transition-colors">
+                            {related.title}
+                          </h4>
+                          <p className="text-white/30 text-xs mt-1">{related.readTime}</p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                  <Link
+                    href="/blog"
+                    className="flex items-center gap-2 text-indigo-400 hover:text-indigo-300 transition-colors text-sm font-medium mt-4"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+                    </svg>
+                    All articles
+                  </Link>
+                </div>
+              )}
+
+              <div className="glass-card rounded-2xl p-6 border border-indigo-500/20">
+                <h3 className="text-white font-bold mb-2">Need help with your project?</h3>
+                <p className="text-white/50 text-sm mb-5 leading-relaxed">
+                  I&apos;m available for web, mobile, and AI automation projects. Let&apos;s have a quick call.
+                </p>
+                <Link
+                  href="/contact"
+                  className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold text-sm hover:opacity-90 hover:scale-105 transition-all duration-200 shadow-lg"
+                >
+                  Get in Touch
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+          </aside>
         </div>
-      </main>
-    </>
+      </div>
+    </main>
   );
 }

@@ -1,0 +1,74 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Draft {
+  id              String      @id @default(cuid())
+  topic           String
+  title           String
+  slug            String      @unique
+  metaDescription String
+  excerpt         String      @db.Text
+  content         String      @db.Text
+  tags            String[]
+  keywords        String[]
+  readingTime     Int         @default(0)
+  sources         String[]
+  status          DraftStatus @default(DRAFT)
+  reviewNotes     String?
+  socialPosts     SocialPost[]
+  published       PublishedArticle?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  reviewedAt      DateTime?
+}
+
+enum DraftStatus {
+  DRAFT
+  APPROVED
+  REJECTED
+  PUBLISHED
+}
+
+model PublishedArticle {
+  id              String   @id @default(cuid())
+  draftId         String   @unique
+  draft           Draft    @relation(fields: [draftId], references: [id])
+  slug            String   @unique
+  title           String
+  content         String   @db.Text
+  metaDescription String
+  excerpt         String   @db.Text
+  tags            String[]
+  readingTime     Int
+  views           Int      @default(0)
+  publishedAt     DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model SocialPost {
+  id        String         @id @default(cuid())
+  draftId   String
+  draft     Draft          @relation(fields: [draftId], references: [id], onDelete: Cascade)
+  platform  SocialPlatform
+  content   String         @db.Text
+  status    PostStatus     @default(DRAFT)
+  createdAt DateTime       @default(now())
+}
+
+enum SocialPlatform {
+  TWITTER
+  LINKEDIN
+}
+
+enum PostStatus {
+  DRAFT
+  APPROVED
+  PUBLISHED
+}
