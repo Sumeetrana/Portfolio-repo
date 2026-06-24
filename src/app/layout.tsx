@@ -67,6 +67,9 @@ export const metadata: Metadata = {
     images: ["/og-image.png"],
     creator: "@sumeetrana",
   },
+  verification: {
+    google: "GWeTGToghr2qf4Fh7i0uR7_zSf6PxmKUl_O9euOyx1s",
+  },
   robots: {
     index: true,
     follow: true,
