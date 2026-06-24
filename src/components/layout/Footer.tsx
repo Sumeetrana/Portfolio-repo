@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { siteConfig, services, projects } from "@/lib/data";
 
 const footerLinks = {
@@ -33,13 +34,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <Link href="/" className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center font-bold text-white text-sm">
-                S
-              </div>
-              <span className="font-semibold text-slate-100">
-                Sumeet <span className="gradient-text">Rana</span>
-              </span>
+            <Link href="/" className="inline-flex mb-4">
+              <Image
+                src="/logo.png"
+                alt="Sumeet Rana"
+                width={160}
+                height={160}
+                className="h-20 w-auto"
+              />
             </Link>
             <p className="text-slate-400 text-sm leading-relaxed max-w-xs mb-6">
               Senior software engineer helping businesses and startups build

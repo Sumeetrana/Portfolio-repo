@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { siteConfig } from "@/lib/data";
@@ -60,15 +61,17 @@ export default function Navbar() {
             {/* Logo */}
             <Link
               href="/"
-              className="flex items-center gap-2 group"
+              className="flex items-center group"
               aria-label="Sumeet Rana — Home"
             >
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center font-bold text-white text-sm group-hover:shadow-lg group-hover:shadow-indigo-500/30 transition-shadow">
-                S
-              </div>
-              <span className="font-semibold text-slate-100 hidden sm:block">
-                Sumeet<span className="gradient-text"> Rana</span>
-              </span>
+              <Image
+                src="/logo.png"
+                alt="Sumeet Rana"
+                width={120}
+                height={120}
+                className="h-20 w-auto"
+                priority
+              />
             </Link>
 
             {/* Desktop nav */}
