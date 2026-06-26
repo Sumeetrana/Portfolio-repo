@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import { motion, useScroll, useTransform, useMotionValueEvent, type MotionValue } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import Link from "next/link";
 import React from "react";
 
@@ -12,16 +12,6 @@ function frameUrl(i: number) {
   return `${FRAME_BASE}${String(i + 1).padStart(3, "0")}.jpg`;
 }
 
-// ── Shared panel dot (hooks must live at component top-level) ─────────────────
-function PanelDot({ progress, index }: { progress: MotionValue<number>; index: number }) {
-  const COUNT = 3;
-  const lo  = Math.max(0, (index - 0.4) / COUNT);
-  const mid = index / COUNT;
-  const hi  = Math.min(1, (index + 0.4) / COUNT);
-  const scale   = useTransform(progress, [lo, mid, hi], [1, 1.8, 1]);
-  const opacity = useTransform(progress, [Math.max(0, (index - 0.3) / COUNT), mid, Math.min(1, (index + 0.3) / COUNT)], [0.25, 1, 0.25]);
-  return <motion.span style={{ scale, opacity }} className="block w-2 h-2 rounded-full bg-white/50" />;
-}
 
 // ── Panel 1: Introduction ─────────────────────────────────────────────────────
 function Panel1() {
@@ -258,7 +248,6 @@ export default function Hero() {
   });
 
   const x              = useTransform(scrollYProgress, [0, 1], ["0vw", "-200vw"]);
-  const hintOpacity    = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
   const overlayOpacity = useTransform(scrollYProgress, [0, 0.4, 1], [0.55, 0.65, 0.72]);
 
   // Map scroll progress → target frame index
@@ -335,6 +324,11 @@ export default function Hero() {
           style={{ opacity: overlayOpacity }}
           className="absolute inset-0 bg-[#050510] pointer-events-none"
         />
+        {/* Mobile-only: extra gradient for text readability on small screens */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70 pointer-events-none md:hidden"
+        />
 
         {/* Shared: floating tech badges (desktop only) */}
         {[
@@ -366,22 +360,6 @@ export default function Hero() {
           <Panel1 />
           <Panel2 />
           <Panel3 />
-        </motion.div>
-
-        {/* Panel indicator dots */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-3 z-30">
-          <PanelDot progress={scrollYProgress} index={0} />
-          <PanelDot progress={scrollYProgress} index={1} />
-          <PanelDot progress={scrollYProgress} index={2} />
-        </div>
-
-        {/* Scroll hint */}
-        <motion.div
-          style={{ opacity: hintOpacity }}
-          className="absolute bottom-20 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none z-30"
-        >
-          <span className="text-xs text-white/30 uppercase tracking-widest">Scroll to explore</span>
-          <div className="w-px h-8 bg-gradient-to-b from-indigo-500/50 to-transparent" />
         </motion.div>
 
       </div>

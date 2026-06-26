@@ -147,7 +147,7 @@ export const projects = [
     slug: "homehub",
     title: "HomeHub",
     subtitle: "UAE Zero-Commission Property Platform",
-    label: "Live · Deployed on Vercel",
+    label: "Live",
     liveUrl: "https://home-hub-orcin.vercel.app",
     problem:
       "Property buyers and renters in UAE were locked into paying significant agent commissions — often 2–5% of the sale price — just to access listings. There was no direct channel between owners and buyers.",
@@ -172,7 +172,7 @@ export const projects = [
     slug: "dogstudio",
     title: "Dog Studio",
     subtitle: "Premium Creative Agency Website",
-    label: "Live · Deployed on Vercel",
+    label: "Live",
     liveUrl: "https://dogstudio-sigma.vercel.app",
     problem:
       "Creative agencies struggle to stand out in a commoditised market. A generic portfolio fails to communicate the calibre of work, the team behind it, or the cultural fit clients are looking for before they ever make contact.",
@@ -197,7 +197,7 @@ export const projects = [
     slug: "3d-portfolio",
     title: "3D Creator Portfolio",
     subtitle: "Animated Personal Portfolio for a 3D Designer",
-    label: "Live · Deployed on Vercel",
+    label: "Live",
     liveUrl: "https://3d-portfolio-one-vert.vercel.app",
     problem:
       "Freelance 3D designers and motion artists need a portfolio that doesn't just list their work — it has to feel like their work. Static image grids fail to communicate the energy and craft of motion design.",
