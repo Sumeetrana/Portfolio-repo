@@ -1,12 +1,16 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
+import { useRef, useEffect } from "react";
+import { motion, useScroll, useTransform, useMotionValueEvent, type MotionValue } from "framer-motion";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import React from "react";
 
-const HeroScene = dynamic(() => import("@/components/three/HeroScene"), { ssr: false });
+const FRAME_COUNT = 176;
+const FRAME_BASE  = "/hero/ezgif-frame-";
+
+function frameUrl(i: number) {
+  return `${FRAME_BASE}${String(i + 1).padStart(3, "0")}.jpg`;
+}
 
 // ── Shared panel dot (hooks must live at component top-level) ─────────────────
 function PanelDot({ progress, index }: { progress: MotionValue<number>; index: number }) {
@@ -239,28 +243,98 @@ function Panel3() {
   );
 }
 
-// ── Hero: shared background + 3-panel horizontal scroll ──────────────────────
+// ── Hero: canvas image-sequence scrubber + 3-panel horizontal scroll ─────────
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef    = useRef<HTMLCanvasElement>(null);
+  const images       = useRef<HTMLImageElement[]>([]);
+  const frameIndex   = useRef(0);
+  const rafRef       = useRef<number>(0);
+  const targetFrame  = useRef(0);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  const x        = useTransform(scrollYProgress, [0, 1], ["0vw", "-200vw"]);
-  const scaleBg  = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
-  const hintOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
+  const x              = useTransform(scrollYProgress, [0, 1], ["0vw", "-200vw"]);
+  const hintOpacity    = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
+  const overlayOpacity = useTransform(scrollYProgress, [0, 0.4, 1], [0.55, 0.65, 0.72]);
+
+  // Map scroll progress → target frame index
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    targetFrame.current = Math.min(
+      FRAME_COUNT - 1,
+      Math.floor(latest * FRAME_COUNT)
+    );
+  });
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    // Preload first 10 frames immediately, rest after a short delay
+    images.current = Array.from({ length: FRAME_COUNT }, () => new Image());
+
+    const loadFrame = (i: number) => {
+      const img = images.current[i];
+      img.src = frameUrl(i);
+      if (i === 0) {
+        img.onload = () => {
+          canvas.width  = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          ctx.drawImage(img, 0, 0);
+        };
+      }
+    };
+
+    // First 10 frames immediately for instant first paint
+    for (let i = 0; i < Math.min(10, FRAME_COUNT); i++) loadFrame(i);
+
+    // Rest after 1s — by then the page is interactive
+    const t = setTimeout(() => {
+      for (let i = 10; i < FRAME_COUNT; i++) loadFrame(i);
+    }, 1000);
+
+    // RAF loop: draw only when the frame index changes
+    const tick = () => {
+      const target = targetFrame.current;
+      if (target !== frameIndex.current) {
+        const img = images.current[target];
+        if (img?.complete) {
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          frameIndex.current = target;
+        }
+      }
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      clearTimeout(t);
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
 
   return (
-    // 300vh gives three full-screen panels to scroll through
     <div ref={containerRef} style={{ height: "300vh" }} aria-label="Hero section">
-      <div className="sticky top-0 h-screen overflow-hidden gradient-bg">
+      <div className="sticky top-0 h-screen overflow-hidden bg-[#050510]">
 
-        {/* Shared: 3D scene background — slowly zooms as user scrolls */}
-        <motion.div style={{ scale: scaleBg }} className="absolute inset-0 will-change-transform">
-          <HeroScene />
-        </motion.div>
-        <div className="absolute inset-0 bg-[#050510]/50 pointer-events-none" aria-hidden="true" />
+        {/* Image-sequence canvas — scroll-driven, frame-perfect */}
+        <canvas
+          ref={canvasRef}
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+
+        {/* Overlay darkens slightly as you scroll deeper into the panels */}
+        <motion.div
+          aria-hidden="true"
+          style={{ opacity: overlayOpacity }}
+          className="absolute inset-0 bg-[#050510] pointer-events-none"
+        />
 
         {/* Shared: floating tech badges (desktop only) */}
         {[

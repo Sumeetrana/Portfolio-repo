@@ -144,10 +144,85 @@ export const services = [
 
 export const projects = [
   {
+    slug: "homehub",
+    title: "HomeHub",
+    subtitle: "UAE Zero-Commission Property Platform",
+    label: "Live · Deployed on Vercel",
+    liveUrl: "https://home-hub-orcin.vercel.app",
+    problem:
+      "Property buyers and renters in UAE were locked into paying significant agent commissions — often 2–5% of the sale price — just to access listings. There was no direct channel between owners and buyers.",
+    solution:
+      "A fully functional real estate marketplace where UAE property owners list for free and buyers/renters contact them directly — zero commission, zero subscription, zero hidden fees. Covers all 7 emirates with luxury-to-mid-range listings.",
+    features: [
+      "Buy/Rent toggle with property type filtering (Apartment, Villa, Penthouse, Studio, Office, Warehouse, Land)",
+      "500+ active listings across Dubai, Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, UAQ",
+      "Sort by newest, price ascending/descending",
+      "Free 4-step listing form — no account required",
+      "Direct buyer/seller contact (phone, WhatsApp, email)",
+      "Paginated property grid with Featured badge system",
+      "Top Destinations section with live listing counts per emirate",
+    ],
+    tech: ["Next.js 15", "TypeScript", "Tailwind CSS", "Vercel", "React"],
+    businessValue:
+      "Eliminates agent commissions entirely — on a AED 2M property, that saves buyers AED 40,000–100,000. The platform positions itself as the UAE's first truly free direct property marketplace, targeting a market worth over $70B annually.",
+    color: "from-violet-500 to-indigo-600",
+    gradient: "from-violet-500/10 to-indigo-600/10",
+  },
+  {
+    slug: "dogstudio",
+    title: "Dog Studio",
+    subtitle: "Premium Creative Agency Website",
+    label: "Live · Deployed on Vercel",
+    liveUrl: "https://dogstudio-sigma.vercel.app",
+    problem:
+      "Creative agencies struggle to stand out in a commoditised market. A generic portfolio fails to communicate the calibre of work, the team behind it, or the cultural fit clients are looking for before they ever make contact.",
+    solution:
+      "A premium agency portfolio site that leads with brand identity and craft — immersive scroll experiences, motion-forward design, and a curated case study section that communicates depth of expertise across Brand Identity, Digital Strategy, Motion Design, WebGL/3D, UX Research, and Art Direction.",
+    features: [
+      "Immersive hero with tagline: 'We Shape Digital Experiences'",
+      "Marquee service strip (Brand Identity, WebGL/3D, Motion Design, UX Research, Art Direction)",
+      "Four featured case studies — Nexus, Luminary, Axiom, Prism — spanning branding, generative art, motion, and XR",
+      "Social proof metrics: 9+ years, 200+ projects, 42 awards, 24-person team",
+      "Work, Studio, Journal, and Contact navigation",
+      "Scroll-driven animations and parallax depth layers",
+      "Cursor interactions and motion-forward transitions",
+    ],
+    tech: ["Next.js", "Framer Motion", "GSAP", "Three.js / WebGL", "Tailwind CSS", "Vercel"],
+    businessValue:
+      "Positions the studio as a premium creative partner — not a commodity vendor. The design-forward presentation filters for high-value clients who appreciate craft, reducing sales friction and commanding premium project budgets.",
+    color: "from-slate-600 to-slate-900",
+    gradient: "from-slate-600/10 to-slate-900/10",
+  },
+  {
+    slug: "3d-portfolio",
+    title: "3D Creator Portfolio",
+    subtitle: "Animated Personal Portfolio for a 3D Designer",
+    label: "Live · Deployed on Vercel",
+    liveUrl: "https://3d-portfolio-one-vert.vercel.app",
+    problem:
+      "Freelance 3D designers and motion artists need a portfolio that doesn't just list their work — it has to feel like their work. Static image grids fail to communicate the energy and craft of motion design.",
+    solution:
+      "A single-page, scroll-driven portfolio for a freelance 3D creator featuring character-by-character text reveals, a parallax motion reel gallery, sticky stacking project cards, and a magnetic hero illustration — all designed to feel as dynamic as the work it showcases.",
+    features: [
+      "Full-viewport hero with magnetic cursor-following character illustration",
+      "Scroll-driven character-by-character text reveal in the About section",
+      "Dual-row parallax gallery (rows scroll in opposite directions) showcasing 20+ motion design previews",
+      "Five services with giant numbered list layout (3D Modeling, Rendering, Motion Design, Branding, Web Design)",
+      "Three sticky stacking project cards with scroll-driven scale animations",
+      "Single gradient CTA button (deep purple → magenta → orange) used consistently as the sole accent",
+      "Fully responsive with Tailwind CSS utility-first layout",
+    ],
+    tech: ["React 18", "Vite", "Framer Motion", "Tailwind CSS", "Google Fonts (Kanit)", "Vercel"],
+    businessValue:
+      "Communicates creative capability through the medium itself — the site IS the portfolio piece. Potential clients experience the designer's motion and interaction sensibility before viewing a single project, dramatically increasing perceived quality and conversion.",
+    color: "from-purple-600 to-pink-600",
+    gradient: "from-purple-600/10 to-pink-600/10",
+  },
+  {
     slug: "genienow",
     title: "GenieNow",
     subtitle: "Service Marketplace Platform",
-    label: "Portfolio concept / self-initiated project",
+    label: "Self-initiated concept",
     problem:
       "Local service providers (plumbers, cleaners, electricians) had no unified digital marketplace to reach customers in UAE. Customers had no reliable way to book verified professionals.",
     solution:
@@ -168,9 +243,9 @@ export const projects = [
   },
   {
     slug: "ai-content-agent",
-    title: "AI Content Publishing Agent",
-    subtitle: "Automated Content Pipeline",
-    label: "Portfolio concept / self-initiated project",
+    title: "AI Content Agent",
+    subtitle: "Automated Content Publishing Pipeline",
+    label: "Self-initiated concept",
     problem:
       "Content teams spend 40+ hours per week researching, writing, and publishing articles. Scaling content production was expensive and slow.",
     solution:
@@ -190,56 +265,10 @@ export const projects = [
     gradient: "from-amber-500/10 to-orange-600/10",
   },
   {
-    slug: "quickbite",
-    title: "QuickBite",
-    subtitle: "Restaurant Ordering Platform",
-    label: "Portfolio concept / self-initiated project",
-    problem:
-      "Restaurants were paying 30% commission to food delivery apps like Talabat and Zomato, significantly eating into thin margins.",
-    solution:
-      "A white-label online ordering platform that restaurants can own — with a branded app, direct orders, zero commission, and full customer data ownership.",
-    features: [
-      "Branded restaurant web app",
-      "Real-time order management system",
-      "Table QR code ordering",
-      "Kitchen display system (KDS)",
-      "Loyalty points & promotions",
-      "Multi-location management",
-    ],
-    tech: ["Next.js", "React Native", "Node.js", "PostgreSQL", "Stripe", "Firebase", "GCP"],
-    businessValue:
-      "Eliminates third-party commission fees, increases average order value by 25% through upsells, and builds direct customer relationships with first-party data.",
-    color: "from-rose-500 to-pink-600",
-    gradient: "from-rose-500/10 to-pink-600/10",
-  },
-  {
-    slug: "fitflow",
-    title: "FitFlow",
-    subtitle: "Gym Management SaaS",
-    label: "Portfolio concept / self-initiated project",
-    problem:
-      "Small to mid-size gyms were using spreadsheets or outdated software to manage memberships, attendance, and billing — leading to revenue leakage.",
-    solution:
-      "A modern SaaS platform for gym management — with biometric check-in, automated billing, trainer scheduling, and member-facing mobile app.",
-    features: [
-      "Biometric & QR check-in system",
-      "Automated subscription billing",
-      "Class & trainer scheduling",
-      "Member mobile app (iOS & Android)",
-      "Revenue analytics dashboard",
-      "Multi-branch management",
-    ],
-    tech: ["Next.js", "React Native", "NestJS", "PostgreSQL", "Stripe", "AWS", "Redis"],
-    businessValue:
-      "Reduces admin time by 60%, eliminates billing errors, and provides data-driven insights that help gym owners increase member retention by 35%.",
-    color: "from-emerald-500 to-teal-600",
-    gradient: "from-emerald-500/10 to-teal-600/10",
-  },
-  {
     slug: "fleettrack",
     title: "FleetTrack",
-    subtitle: "Logistics Dashboard",
-    label: "Portfolio concept / self-initiated project",
+    subtitle: "Real-Time Logistics Dashboard",
+    label: "Self-initiated concept",
     problem:
       "Logistics companies in UAE had no real-time visibility into their vehicle fleets, leading to inefficient routing, fuel waste, and delayed deliveries.",
     solution:
@@ -257,29 +286,6 @@ export const projects = [
       "Reduces fuel costs by 18%, improves on-time delivery rate to 97%, and gives operations teams complete visibility into fleet performance.",
     color: "from-blue-500 to-cyan-600",
     gradient: "from-blue-500/10 to-cyan-600/10",
-  },
-  {
-    slug: "homehub",
-    title: "HomeHub",
-    subtitle: "Real Estate Portal",
-    label: "Portfolio concept / self-initiated project",
-    problem:
-      "Property buyers and renters in UAE found it hard to find verified listings with accurate pricing, virtual tours, and neighborhood data in one place.",
-    solution:
-      "A premium real estate portal with AI-powered property matching, virtual 360° tours, neighborhood analytics, mortgage calculators, and agent CRM.",
-    features: [
-      "AI property recommendation engine",
-      "360° virtual property tours",
-      "Neighborhood insights & analytics",
-      "Mortgage & ROI calculators",
-      "Agent CRM & lead management",
-      "Multi-language (English & Arabic)",
-    ],
-    tech: ["Next.js", "Python", "PostgreSQL", "Elasticsearch", "AWS", "Three.js", "Mapbox"],
-    businessValue:
-      "Increases qualified lead conversion by 45%, reduces time-on-market for listings, and creates a premium property search experience that builds agent trust.",
-    color: "from-violet-500 to-indigo-600",
-    gradient: "from-violet-500/10 to-indigo-600/10",
   },
 ];
 

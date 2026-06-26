@@ -10,10 +10,10 @@ type FilterTab = "All" | "Web" | "Mobile" | "SaaS" | "AI";
 
 const filterConfig: Record<FilterTab, string[]> = {
   All: [],
-  Web: ["genienow", "homehub", "quickbite"],
-  Mobile: ["quickbite", "fitflow"],
-  SaaS: ["fitflow", "fleettrack"],
-  AI: ["ai-content-agent", "homehub"],
+  Web: ["homehub", "dogstudio", "3d-portfolio", "genienow"],
+  Mobile: ["genienow", "fleettrack"],
+  SaaS: ["homehub", "fleettrack"],
+  AI: ["ai-content-agent"],
 };
 
 const fadeInUp = {
@@ -85,8 +85,7 @@ export default function PortfolioClient() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-gray-300 text-lg max-w-2xl mx-auto mb-10"
           >
-            Each project below is a self-initiated portfolio concept — designed to demonstrate full-stack
-            engineering depth across real-world industries and business problems.
+            A mix of live shipped products and self-initiated concepts — each demonstrating full-stack engineering depth across real-world industries.
           </motion.p>
 
           {/* Filter Tabs */}
@@ -229,14 +228,17 @@ export default function PortfolioClient() {
 
                     {/* CTAs */}
                     <div className="flex flex-col sm:flex-row gap-3 mt-auto">
-                      <Button
-                        href={`/case-studies/${project.slug}`}
-                        variant="primary"
-                        size="sm"
-                        className="flex-1 justify-center"
-                      >
-                        View Case Study →
-                      </Button>
+                      {"liveUrl" in project && project.liveUrl && (
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold text-sm shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:from-indigo-400 hover:to-violet-500 transition-all duration-200"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                          View Live Site
+                        </a>
+                      )}
                       <Button
                         href={`/contact?project=${project.slug}`}
                         variant="secondary"
@@ -270,8 +272,7 @@ export default function PortfolioClient() {
             transition={{ duration: 0.6 }}
             className="text-center text-gray-500 text-sm max-w-2xl mx-auto px-4 py-6 border-t border-white/5"
           >
-            All projects shown are portfolio concepts / self-initiated projects. They demonstrate technical
-            capability and real-world problem-solving — not client deliverables.
+            Projects marked <span className="text-indigo-400">Live · Deployed on Vercel</span> are real shipped products. Others are self-initiated concepts demonstrating full-stack engineering depth.
           </motion.p>
         </div>
       </section>
