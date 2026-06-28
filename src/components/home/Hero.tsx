@@ -190,21 +190,29 @@ export default function Hero() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Draw image scaled to cover the canvas — shift right so character stays right of centre
+    // Draw image scaled to cover the canvas
+    // Desktop: shift right so character stays clear of the left text column
+    // Mobile: center the image so character is fully visible
     const drawCover = (img: HTMLImageElement) => {
       const cw = canvas.width;
       const ch = canvas.height;
       const scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
       const scaledW = img.naturalWidth * scale;
-      const scaledH = img.naturalHeight * scale;
       const overflow = scaledW - cw;
-      const dx = -(overflow * 0.3);
-      const dy = (ch - scaledH) / 2;
+      const isDesktop = window.innerWidth >= 768;
+      // Mobile: use contain-fit scale so the full character is visible
+      const mobileScale = Math.min(cw / img.naturalWidth, ch / img.naturalHeight) * 0.95;
+      const finalScale = isDesktop ? scale : mobileScale;
+      const finalW = img.naturalWidth * finalScale;
+      const finalH = img.naturalHeight * finalScale;
+      // Desktop: shift right; mobile: center
+      const dx = isDesktop ? -(overflow * 0.3) : (cw - finalW) / 2;
+      const dy = (ch - finalH) / 2;
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = "high";
       ctx.filter = "blur(0.4px)";
       ctx.clearRect(0, 0, cw, ch);
-      ctx.drawImage(img, dx, dy, scaledW, scaledH);
+      ctx.drawImage(img, dx, dy, finalW, finalH);
       ctx.filter = "none";
     };
 
