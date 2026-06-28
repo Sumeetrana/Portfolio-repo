@@ -144,31 +144,6 @@ export const services = [
 
 export const projects = [
   {
-    slug: "homehub",
-    title: "HomeHub",
-    subtitle: "UAE Zero-Commission Property Platform",
-    label: "Live",
-    liveUrl: "https://home-hub-orcin.vercel.app",
-    problem:
-      "Property buyers and renters in UAE were locked into paying significant agent commissions — often 2–5% of the sale price — just to access listings. There was no direct channel between owners and buyers.",
-    solution:
-      "A fully functional real estate marketplace where UAE property owners list for free and buyers/renters contact them directly — zero commission, zero subscription, zero hidden fees. Covers all 7 emirates with luxury-to-mid-range listings.",
-    features: [
-      "Buy/Rent toggle with property type filtering (Apartment, Villa, Penthouse, Studio, Office, Warehouse, Land)",
-      "500+ active listings across Dubai, Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, UAQ",
-      "Sort by newest, price ascending/descending",
-      "Free 4-step listing form — no account required",
-      "Direct buyer/seller contact (phone, WhatsApp, email)",
-      "Paginated property grid with Featured badge system",
-      "Top Destinations section with live listing counts per emirate",
-    ],
-    tech: ["Next.js 15", "TypeScript", "Tailwind CSS", "Vercel", "React"],
-    businessValue:
-      "Eliminates agent commissions entirely — on a AED 2M property, that saves buyers AED 40,000–100,000. The platform positions itself as the UAE's first truly free direct property marketplace, targeting a market worth over $70B annually.",
-    color: "from-violet-500 to-indigo-600",
-    gradient: "from-violet-500/10 to-indigo-600/10",
-  },
-  {
     slug: "dogstudio",
     title: "Dog Studio",
     subtitle: "Premium Creative Agency Website",
@@ -217,6 +192,31 @@ export const projects = [
       "Communicates creative capability through the medium itself — the site IS the portfolio piece. Potential clients experience the designer's motion and interaction sensibility before viewing a single project, dramatically increasing perceived quality and conversion.",
     color: "from-purple-600 to-pink-600",
     gradient: "from-purple-600/10 to-pink-600/10",
+  },
+  {
+    slug: "homehub",
+    title: "HomeHub",
+    subtitle: "UAE Zero-Commission Property Platform",
+    label: "Live",
+    liveUrl: "https://home-hub-orcin.vercel.app",
+    problem:
+      "Property buyers and renters in UAE were locked into paying significant agent commissions — often 2–5% of the sale price — just to access listings. There was no direct channel between owners and buyers.",
+    solution:
+      "A fully functional real estate marketplace where UAE property owners list for free and buyers/renters contact them directly — zero commission, zero subscription, zero hidden fees. Covers all 7 emirates with luxury-to-mid-range listings.",
+    features: [
+      "Buy/Rent toggle with property type filtering (Apartment, Villa, Penthouse, Studio, Office, Warehouse, Land)",
+      "500+ active listings across Dubai, Abu Dhabi, Sharjah, Ajman, RAK, Fujairah, UAQ",
+      "Sort by newest, price ascending/descending",
+      "Free 4-step listing form — no account required",
+      "Direct buyer/seller contact (phone, WhatsApp, email)",
+      "Paginated property grid with Featured badge system",
+      "Top Destinations section with live listing counts per emirate",
+    ],
+    tech: ["Next.js 15", "TypeScript", "Tailwind CSS", "Vercel", "React"],
+    businessValue:
+      "Eliminates agent commissions entirely — on a AED 2M property, that saves buyers AED 40,000–100,000. The platform positions itself as the UAE's first truly free direct property marketplace, targeting a market worth over $70B annually.",
+    color: "from-violet-500 to-indigo-600",
+    gradient: "from-violet-500/10 to-indigo-600/10",
   },
   {
     slug: "genienow",

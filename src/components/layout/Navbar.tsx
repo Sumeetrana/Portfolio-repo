@@ -47,11 +47,10 @@ export default function Navbar() {
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-          scrolled
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${scrolled
             ? "bg-[#050510]/95 backdrop-blur-xl border-b border-indigo-500/10 shadow-lg shadow-black/20"
             : "bg-transparent"
-        }`}
+          }`}
       >
         <div className="container-custom">
           <nav
@@ -69,7 +68,7 @@ export default function Navbar() {
                 alt="Sumeet Rana"
                 width={120}
                 height={120}
-                className="h-20 w-auto"
+                className="h-16 w-auto"
                 priority
               />
             </Link>
@@ -85,11 +84,10 @@ export default function Navbar() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className={`relative px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
-                        isActive
+                      className={`relative px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${isActive
                           ? "text-indigo-400"
                           : "text-slate-400 hover:text-slate-200"
-                      }`}
+                        }`}
                     >
                       {link.label}
                       {isActive && (
@@ -164,9 +162,8 @@ export default function Navbar() {
                     >
                       <Link
                         href={link.href}
-                        className={`block py-3 text-xl font-medium transition-colors border-b border-white/5 ${
-                          isActive ? "text-indigo-400" : "text-slate-300 hover:text-slate-100"
-                        }`}
+                        className={`block py-3 text-xl font-medium transition-colors border-b border-white/5 ${isActive ? "text-indigo-400" : "text-slate-300 hover:text-slate-100"
+                          }`}
                       >
                         {link.label}
                       </Link>
